@@ -33,7 +33,6 @@ function locate_log4j() {
       2>&1 \
       | grep -v '^find:.* Permission denied$' \
       | grep -v '^find:.* No such file or directory$'
-  fi
 }
 
 function find_jar_files() {
