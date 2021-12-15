@@ -27,9 +27,6 @@ function ok() {
 }
 
 function locate_log4j() {
-  if [ "$(command -v locate)" ]; then
-    locate log4j
-  else
     find \
       /var /etc /usr /opt /lib* \
       -name "*log4j*" \
@@ -111,6 +108,25 @@ information "_________________________________________________"
 if [ "$JAVA" == "" ]; then
   warning "Some apps bundle the vulnerable library in their own compiled package, so 'java' might not be installed but one such apps could still be vulnerable."
 fi
+
+echo -e ${YELLOW}"_________________________________________________"${ENDCOLOR}
+echo -e ${YELLOW}"Looking for exploitation of vulnerabilities - Commands from InfoSec:";
+echo "Test 1: Searching for exploitation attempts in UNCOMPRESSED files in folder /var/log recursively"
+if [ "$(command -v egrep)" ]; then
+    echo "Test 1: Showing test results of UNCOMPRESSED files under /var/log:"
+    sudo egrep -i -r '\$\{jndi:(ldap[s]?|rmi|dns):/[^\n]+' /var/log
+    echo "Test 1 FINISHED, If there was nothing greped, it is safe."
+fi
+echo -e "_________________________________________________"
+echo "Test 2: Searching for exploitation attempts ini COMPRESSED files in folder /var/log recursively"
+if [ "$(command -v egrep)" ]; then
+    echo "Test 2: Showing test results of COMPRESSED files under /var/log:"
+    sudo find /var/log -name \*.gz -print0 | xargs -0 sudo zgrep -E -i '\$\{jndi:(ldap[s]?|rmi|dns):/[^\n]+'
+    echo "Test 2 FINISHED, If there was nothing greped, it is safe."
+fi
+echo -e ${YELLOW}"_________________________________________________"${ENDCOLOR}
+
+
 echo
 warning "This whole script is not 100% proof you are not vulnerable, but a strong hint"
 echo
