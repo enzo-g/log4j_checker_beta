@@ -127,5 +127,13 @@ echo -e ${YELLOW}"_________________________________________________"${ENDCOLOR}
 
 
 echo
+echo "Checking Crowdstrike now..."
+crowdstrike_stat=$(ps -axo user,pid,ppid,stat,command | grep falcon | grep -v 'grep')
+if [ "$crowdstrike_stat" ]; then
+    echo -e ${GREEN}"Crowdstrike is installed."
+else
+echo -e ${RED}"Crowdstrike is NOT running... Please enable it / install it"
+fi
+echo
 warning "This whole script is not 100% proof you are not vulnerable, but a strong hint"
 echo
